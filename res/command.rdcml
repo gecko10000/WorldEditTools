@@ -1,0 +1,14 @@
+worldedittools,wetools {
+    permission worldedittools.command
+    reload {
+        help Reloads the config
+        permission worldedittools.reload
+        hook reload
+    }
+    get {
+        help Opens the tool GUI to get tools
+        permission worldedittools.get
+        hook get
+        user player
+    }
+}

@@ -1,0 +1,7 @@
+name: WorldEditTools
+main: gecko10000.WorldEditTools.WorldEditTools
+version: 0.1
+api-version: 1.13
+depend:
+  - WorldEdit
+  - RedLib
