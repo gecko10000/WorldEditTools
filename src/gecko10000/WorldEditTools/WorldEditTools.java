@@ -21,7 +21,7 @@ public class WorldEditTools extends JavaPlugin {
     public void reload() {
         config = new ConfigManager(this)
                 .addConverter(ItemManager.ToolType.class, ItemManager.ToolType::valueOf, ItemManager.ToolType::toString)
-                .register(ToolGetGUI.class)
+                .register(ToolGetGUI.class, itemManager)
                 .saveDefaults().load();
     }
 

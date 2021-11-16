@@ -19,7 +19,7 @@ public class ItemManager {
     private static final NamespacedKey KEY = NamespacedKey.fromString("worldedittools:tool");
 
     @ConfigValue
-    private final Map<ToolType, ItemStack> tools = ConfigManager.map(ToolType.class, ItemStack.class);
+    private Map<ToolType, ItemStack> tools = ConfigManager.map(ToolType.class, ItemStack.class);
 
     public ItemManager(WorldEditTools plugin) {
         this.plugin = plugin;
