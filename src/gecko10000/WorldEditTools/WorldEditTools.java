@@ -23,6 +23,7 @@ public class WorldEditTools extends JavaPlugin {
                 .addConverter(ItemManager.ToolType.class, ItemManager.ToolType::valueOf, ItemManager.ToolType::toString)
                 .register(ToolGetGUI.class, itemManager)
                 .saveDefaults().load();
+        itemManager.addDefaults();
     }
 
     public static Component makeReadableComponent(String input) {

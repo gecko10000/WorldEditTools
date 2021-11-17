@@ -23,7 +23,6 @@ public class ItemManager {
 
     public ItemManager(WorldEditTools plugin) {
         this.plugin = plugin;
-        addDefaults();
     }
 
     public ItemStack getTool(ToolType type) {
@@ -43,41 +42,42 @@ public class ItemManager {
     }
 
     public void addDefaults() {
-        tools.put(ToolType.SELECTION_STICK, new ItemBuilder(Material.STICK)
+        tools.putIfAbsent(ToolType.SELECTION_STICK, new ItemBuilder(Material.STICK)
                 .setName(ChatColor.GREEN + "Selection Tool")
                 .setLore(ChatColor.YELLOW + "Left click to select position 1",
                         ChatColor.YELLOW + "Right click to select position 2")
                 .addEnchant(Enchantment.DURABILITY, 1)
                 .addItemFlags(ItemFlag.HIDE_ENCHANTS));
-        tools.put(ToolType.FILL_TOOL, new ItemBuilder(Material.BUCKET)
+        tools.putIfAbsent(ToolType.FILL_TOOL, new ItemBuilder(Material.BUCKET)
                 .setName(ChatColor.GREEN + "Fill Tool")
                 .setLore(ChatColor.YELLOW + "Right click after making a selection",
                         ChatColor.YELLOW + "to fill it with the block of your choice.")
                 .addEnchant(Enchantment.DURABILITY, 1)
                 .addItemFlags(ItemFlag.HIDE_ENCHANTS));
-        tools.put(ToolType.CUT_TOOL, new ItemBuilder(Material.SHEARS)
+        tools.putIfAbsent(ToolType.CUT_TOOL, new ItemBuilder(Material.SHEARS)
                 .setName(ChatColor.GREEN + "Cut Tool")
                 .setLore(ChatColor.YELLOW + "Right click after making a",
                         ChatColor.YELLOW + "selection to cut it.")
                 .addEnchant(Enchantment.DURABILITY, 1)
                 .addItemFlags(ItemFlag.HIDE_ENCHANTS));
-        tools.put(ToolType.COPY_TOOL, new ItemBuilder(Material.PAPER)
+        tools.putIfAbsent(ToolType.COPY_TOOL, new ItemBuilder(Material.PAPER)
                 .setName(ChatColor.GREEN + "Copy Tool")
                 .setLore(ChatColor.YELLOW + "Right click after making a",
                         ChatColor.YELLOW + "selection to copy it.")
                 .addEnchant(Enchantment.DURABILITY, 1)
                 .addItemFlags(ItemFlag.HIDE_ENCHANTS));
-        tools.put(ToolType.PASTE_TOOL, new ItemBuilder(Material.WRITABLE_BOOK)
+        tools.putIfAbsent(ToolType.PASTE_TOOL, new ItemBuilder(Material.WRITABLE_BOOK)
                 .setName(ChatColor.GREEN + "Paste Tool")
                 .setLore(ChatColor.YELLOW + "Right click after copying or",
                         ChatColor.YELLOW + "cutting a selection to paste it.")
                 .addEnchant(Enchantment.DURABILITY, 1)
                 .addItemFlags(ItemFlag.HIDE_ENCHANTS));
-        tools.put(ToolType.UNDO_TOOL, new ItemBuilder(Material.SPECTRAL_ARROW)
+        tools.putIfAbsent(ToolType.UNDO_TOOL, new ItemBuilder(Material.SPECTRAL_ARROW)
                 .setName(ChatColor.GREEN + "Undo Tool")
                 .setLore(ChatColor.YELLOW + "Right click to undo.")
                 .addEnchant(Enchantment.DURABILITY, 1)
                 .addItemFlags(ItemFlag.HIDE_ENCHANTS));
+        plugin.config.save();
     }
 
     public enum ToolType {
