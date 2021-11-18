@@ -1,5 +1,6 @@
 package gecko10000.WorldEditTools;
 
+import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -95,7 +96,10 @@ public class Listeners implements Listener {
     }
 
     private void undo(PlayerInteractEvent evt) {
-
+        Player wePlayer = BukkitAdapter.adapt(evt.getPlayer());
+        LocalSession session = plugin.getSession(wePlayer);
+        EditSession editSession = session.undo(null, wePlayer);
+        wePlayer.printInfo(TextComponent.of(editSession == null ? "Nothing to undo." : "Undid edit."));
     }
 
 }
