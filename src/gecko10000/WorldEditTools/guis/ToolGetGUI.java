@@ -26,7 +26,7 @@ public class ToolGetGUI {
         this.plugin = plugin;
         gui = new InventoryGUI(Bukkit.createInventory(null, SIZE, plugin.makeReadableComponent(guiName)));
         gui.setReturnsItems(false);
-        gui.fill(0, SIZE, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setName(""));
+        gui.fill(0, SIZE, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setName(WorldEditTools.makeReadableString("&r")));
         setClickableItem(10, plugin.itemManager.getTool(ItemManager.ToolType.SELECTION_STICK));
         setClickableItem(13, plugin.itemManager.getTool(ItemManager.ToolType.FILL_TOOL));
         setClickableItem(16, plugin.itemManager.getTool(ItemManager.ToolType.CUT_TOOL));

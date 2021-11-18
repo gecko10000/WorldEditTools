@@ -1,5 +1,6 @@
 package gecko10000.WorldEditTools;
 
+import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -7,15 +8,19 @@ import com.sk89q.worldedit.entity.Player;
 import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.extension.platform.permission.ActorSelectorLimits;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.regions.selector.limit.SelectorLimits;
 import com.sk89q.worldedit.session.SessionManager;
+import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import com.sk89q.worldedit.world.World;
+import gecko10000.WorldEditTools.guis.FillGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class Listeners implements Listener {
 
@@ -53,8 +58,8 @@ public class Listeners implements Listener {
     }
 
     private void select(PlayerInteractEvent evt) {
-        LocalSession session = getSession(evt);
         Player player = BukkitAdapter.adapt(evt.getPlayer());
+        LocalSession session = plugin.getSession(player);
         RegionSelector selector = session.getRegionSelector(player.getWorld());
         BlockVector3 clicked = BukkitAdapter.asBlockVector(evt.getClickedBlock().getLocation());
         SelectorLimits limits = ActorSelectorLimits.forActor(player);
@@ -68,7 +73,13 @@ public class Listeners implements Listener {
     }
 
     private void fill(PlayerInteractEvent evt) {
-
+        org.bukkit.entity.Player player = evt.getPlayer();
+        Player wePlayer = BukkitAdapter.adapt(player);
+        if (plugin.getSelection(wePlayer) == null) {
+            wePlayer.printError(TextComponent.of("Make a selection first!"));
+            return;
+        }
+        new FillGUI(plugin, evt.getPlayer());
     }
 
     private void cut(PlayerInteractEvent evt) {
@@ -85,11 +96,6 @@ public class Listeners implements Listener {
 
     private void undo(PlayerInteractEvent evt) {
 
-    }
-
-    private LocalSession getSession(PlayerInteractEvent evt) {
-        SessionManager manager = WorldEdit.getInstance().getSessionManager();
-        return manager.get(BukkitAdapter.adapt(evt.getPlayer()));
     }
 
 }
