@@ -85,7 +85,7 @@ public class FillGUI {
             wePlayer.printError(TextComponent.of("Too many blocks! (" + selection.getVolume() + "/" + maxFillBlocks + ")"));
             return;
         }
-        gui.destroy();
+        player.closeInventory();
     }
 
 }
