@@ -6,12 +6,8 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.util.formatting.text.TextComponent;
-import com.sk89q.worldedit.world.block.BaseBlock;
-import com.sk89q.worldedit.world.block.BlockType;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import gecko10000.WorldEditTools.WorldEditTools;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,8 +19,6 @@ import redempt.redlib.inventorygui.ItemButton;
 import redempt.redlib.itemutils.ItemBuilder;
 import redempt.redlib.misc.FormatUtils;
 import redempt.redlib.misc.Task;
-
-import java.util.Locale;
 
 public class FillGUI {
 
@@ -43,7 +37,7 @@ public class FillGUI {
         gui.getInventory().setItem(13, null);
         gui.openSlot(13);
         gui.addButton(10, ItemButton.create(new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
-                .setName(WorldEditTools.makeReadableString("&cCancel")), evt -> gui.destroy()));
+                .setName(WorldEditTools.makeReadableString("&cCancel")), evt -> player.closeInventory()));
         gui.addButton(16, ItemButton.create(null,
                 evt -> fill(player, gui.getInventory().getItem(13))));
         setName();
