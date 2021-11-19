@@ -1,27 +1,27 @@
 package gecko10000.WorldEditTools;
 
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
-import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.entity.Player;
-import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.extension.platform.permission.ActorSelectorLimits;
+import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
+import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.regions.selector.limit.SelectorLimits;
-import com.sk89q.worldedit.session.SessionManager;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.util.formatting.text.TextComponent;
-import com.sk89q.worldedit.world.World;
 import gecko10000.WorldEditTools.guis.FillGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.jetbrains.annotations.NotNull;
 
 public class Listeners implements Listener {
 
@@ -84,10 +84,27 @@ public class Listeners implements Listener {
     }
 
     private void cut(PlayerInteractEvent evt) {
-
     }
 
     private void copy(PlayerInteractEvent evt) {
+        Player wePlayer = BukkitAdapter.adapt(evt.getPlayer());
+        Region selection = plugin.getSelection(wePlayer);
+        if (!verifySelection(wePlayer)) {
+            return;
+        }
+        Clipboard clipboard = new BlockArrayClipboard(selection);
+        clipboard.setOrigin(wePlayer.getLocation().toVector().toBlockPoint());
+        LocalSession session = plugin.getSession(wePlayer);
+        EditSession editSession = session.createEditSession(wePlayer);
+        ForwardExtentCopy copy = new ForwardExtentCopy(editSession, selection, clipboard, selection.getMinimumPoint());
+        try {
+            Operations.complete(copy);
+            session.setClipboard(new ClipboardHolder(clipboard));
+            wePlayer.printInfo(copy.getStatusMessages().iterator().next());
+        } catch (WorldEditException e) {
+            e.printStackTrace();
+            wePlayer.printError(TextComponent.of("An error was encountered."));
+        }
 
     }
 
@@ -100,6 +117,15 @@ public class Listeners implements Listener {
         LocalSession session = plugin.getSession(wePlayer);
         EditSession editSession = session.undo(null, wePlayer);
         wePlayer.printInfo(TextComponent.of(editSession == null ? "Nothing to undo." : "Undid edit."));
+    }
+
+    private boolean verifySelection(Player player) {
+        Region selection = plugin.getSelection(player);
+        if (selection == null) {
+            player.printError(TextComponent.of("Make a selection first!"));
+            return false;
+        }
+        return true;
     }
 
 }
