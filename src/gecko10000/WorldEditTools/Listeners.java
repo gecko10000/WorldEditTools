@@ -76,8 +76,7 @@ public class Listeners implements Listener {
     private void fill(PlayerInteractEvent evt) {
         org.bukkit.entity.Player player = evt.getPlayer();
         Player wePlayer = BukkitAdapter.adapt(player);
-        if (plugin.getSelection(wePlayer) == null) {
-            wePlayer.printError(TextComponent.of("Make a selection first!"));
+        if (!verifySelection(wePlayer)) {
             return;
         }
         new FillGUI(plugin, evt.getPlayer());
