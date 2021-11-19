@@ -7,6 +7,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import com.sk89q.worldedit.world.block.BlockTypes;
+import gecko10000.WorldEditTools.Listeners;
 import gecko10000.WorldEditTools.WorldEditTools;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -39,7 +40,7 @@ public class FillGUI {
         gui.addButton(10, ItemButton.create(new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
                 .setName(WorldEditTools.makeReadableString("&cCancel")), evt -> player.closeInventory()));
         gui.addButton(16, ItemButton.create(null,
-                evt -> fill(player, gui.getInventory().getItem(13))));
+                evt -> fill(plugin, player, gui.getInventory().getItem(13), Listeners.max)));
         setName();
         gui.setOnClickOpenSlot(evt -> Task.syncDelayed(this::setName));
         gui.setOnDragOpenSlot(evt -> Task.syncDelayed(this::setName));
@@ -54,10 +55,7 @@ public class FillGUI {
                 .setName(WorldEditTools.makeReadableString("&aConfirm filling with " + type)));
     }
 
-    @ConfigValue("max-blocks.fill")
-    private static int maxFillBlocks = 1000;
-
-    private void fill(Player player, ItemStack item) {
+    public static void fill(WorldEditTools plugin, Player player, ItemStack item, int max) {
         Material type = item == null ? Material.AIR : item.getType();
         com.sk89q.worldedit.entity.Player wePlayer = BukkitAdapter.adapt(player);
         if (!type.isBlock()) {
@@ -68,7 +66,7 @@ public class FillGUI {
         EditSession session = WorldEdit.getInstance().newEditSessionBuilder()
                 .world(selection.getWorld())
                 .actor(wePlayer)
-                .maxBlocks(maxFillBlocks)
+                .maxBlocks(max)
                 .build();
         try {
             session.setBlocks(selection, BlockTypes.get(type.getKey().toString()).getDefaultState());
@@ -76,7 +74,7 @@ public class FillGUI {
             plugin.getSession(wePlayer).remember(session);
             session.close();
         } catch (MaxChangedBlocksException e) {
-            wePlayer.printError(TextComponent.of("Too many blocks! (" + selection.getVolume() + "/" + maxFillBlocks + ")"));
+            wePlayer.printError(TextComponent.of("Too many blocks! (" + selection.getVolume() + "/" + max + ")"));
             return;
         }
         player.closeInventory();

@@ -27,12 +27,12 @@ public class ToolGetGUI {
         gui = new InventoryGUI(Bukkit.createInventory(null, SIZE, plugin.makeReadableComponent(guiName)));
         gui.setReturnsItems(false);
         gui.fill(0, SIZE, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setName(WorldEditTools.makeReadableString("&r")));
-        setClickableItem(10, plugin.itemManager.getTool(ItemManager.ToolType.SELECTION_STICK));
-        setClickableItem(13, plugin.itemManager.getTool(ItemManager.ToolType.FILL_TOOL));
-        setClickableItem(16, plugin.itemManager.getTool(ItemManager.ToolType.CUT_TOOL));
-        setClickableItem(28, plugin.itemManager.getTool(ItemManager.ToolType.COPY_TOOL));
-        setClickableItem(31, plugin.itemManager.getTool(ItemManager.ToolType.PASTE_TOOL));
-        setClickableItem(34, plugin.itemManager.getTool(ItemManager.ToolType.UNDO_TOOL));
+        setClickableItem(10, plugin.itemManager.getTool(ItemManager.ToolType.SELECT));
+        setClickableItem(13, plugin.itemManager.getTool(ItemManager.ToolType.FILL));
+        setClickableItem(16, plugin.itemManager.getTool(ItemManager.ToolType.CUT));
+        setClickableItem(28, plugin.itemManager.getTool(ItemManager.ToolType.COPY));
+        setClickableItem(31, plugin.itemManager.getTool(ItemManager.ToolType.PASTE));
+        setClickableItem(34, plugin.itemManager.getTool(ItemManager.ToolType.UNDO));
         gui.open(player);
     }
 
