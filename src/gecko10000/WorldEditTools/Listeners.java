@@ -55,7 +55,7 @@ public class Listeners implements Listener {
         switch (type) {
             case FILL -> fill(evt);
             case CUT -> cut(evt);
-            case COPY -> copy(evt, false);
+            case COPY -> copy(evt);
             case PASTE -> paste(evt);
             case UNDO -> undo(evt);
         }
@@ -66,6 +66,10 @@ public class Listeners implements Listener {
         LocalSession session = plugin.getSession(player);
         RegionSelector selector = session.getRegionSelector(player.getWorld());
         BlockVector3 clicked = BukkitAdapter.asBlockVector(evt.getClickedBlock().getLocation());
+        if (!plugin.isInAllowedIsland(evt.getPlayer(), clicked, clicked)) {
+            player.printError(TextComponent.of("Selection outside of island."));
+            return;
+        }
         SelectorLimits limits = ActorSelectorLimits.forActor(player);
         if (evt.getAction() == Action.LEFT_CLICK_BLOCK) {
             selector.selectPrimary(clicked, limits);
@@ -86,21 +90,23 @@ public class Listeners implements Listener {
     }
 
     private void cut(PlayerInteractEvent evt) {
-        copy(evt, true);
+        Player wePlayer = BukkitAdapter.adapt(evt.getPlayer());
+        Region selection = plugin.getSelection(wePlayer);
+        if (!copy(evt)) {
+            return;
+        }
         FillGUI.fill(plugin, evt.getPlayer(), null, max);
     }
 
-    private void copy(PlayerInteractEvent evt, boolean silent) {
+    private boolean copy(PlayerInteractEvent evt) {
         Player wePlayer = BukkitAdapter.adapt(evt.getPlayer());
         if (!verifySelection(wePlayer)) {
-            return;
+            return false;
         }
         Region selection = plugin.getSelection(wePlayer);
         if (selection.getVolume() > max) {
-            if (!silent) {
-                wePlayer.printError(TextComponent.of("Too many blocks! (" + selection.getVolume() + "/" + max + ")"));
-            }
-            return;
+            wePlayer.printError(TextComponent.of("Too many blocks! (" + selection.getVolume() + "/" + max + ")"));
+            return false;
         }
         Clipboard clipboard = new BlockArrayClipboard(selection);
         clipboard.setOrigin(wePlayer.getLocation().toVector().toBlockPoint());
@@ -114,8 +120,9 @@ public class Listeners implements Listener {
         } catch (WorldEditException e) {
             e.printStackTrace();
             wePlayer.printError(TextComponent.of("An error was encountered."));
+            return false;
         }
-
+        return true;
     }
 
     private void paste(PlayerInteractEvent evt) {
@@ -132,8 +139,19 @@ public class Listeners implements Listener {
                 .world(wePlayer.getWorld())
                 .actor(wePlayer)
                 .build();
+        Clipboard clipboard = holder.getClipboard();
+        BlockVector3 playerLoc = wePlayer.getLocation().toVector().toBlockPoint();
+        BlockVector3 origin = clipboard.getOrigin();
+        BlockVector3 offset1 = clipboard.getMinimumPoint().subtract(origin);
+        BlockVector3 offset2 = clipboard.getMaximumPoint().subtract(origin);
+        BlockVector3 bv1 = playerLoc.add(offset1);
+        BlockVector3 bv2 = playerLoc.add(offset2);
+        if (!plugin.isInAllowedIsland(evt.getPlayer(), bv1, bv2)) {
+            wePlayer.printError(TextComponent.of("Cannot paste outside your island!"));
+            return;
+        }
         Operation paste = holder.createPaste(editSession)
-                .to(wePlayer.getLocation().toVector().toBlockPoint())
+                .to(playerLoc)
                 .build();
         try {
             Operations.complete(paste);

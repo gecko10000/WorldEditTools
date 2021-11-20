@@ -12,7 +12,6 @@ import redempt.redlib.itemutils.ItemBuilder;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ItemManager {
 
@@ -63,7 +62,7 @@ public class ItemManager {
                 .setName(WorldEditTools.makeReadableString(name))
                 .setLore(lore.stream()
                         .map(WorldEditTools::makeReadableString)
-                        .collect(Collectors.toList()).toArray(new String[0]))
+                        .toArray(String[]::new))
                 .addEnchant(Enchantment.DURABILITY, 1)
                 .addItemFlags(ItemFlag.values()).clone());
     }

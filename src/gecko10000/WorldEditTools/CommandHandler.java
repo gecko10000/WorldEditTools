@@ -19,7 +19,7 @@ public class CommandHandler {
     @CommandHook("reload")
     public void reload(CommandSender sender) {
         plugin.reload();
-        sender.sendMessage(plugin.makeReadableComponent("&aConfig reloaded!"));
+        sender.sendMessage(WorldEditTools.makeReadableComponent("&aConfig reloaded!"));
     }
 
     @CommandHook("get")
